@@ -54,21 +54,26 @@ public class Main {
     private static void showScreen(String screen) {
         content.removeAll();
 
-        if (screen.equals("Search Colleges")) {
-            content.add(new SearchPanel(), BorderLayout.CENTER);
+        
+if (screen.equals("Search Colleges")) {
+    content.add(new SearchPanel(), BorderLayout.CENTER);
 
-        } else if (screen.equals("My Preferences")) {
-            content.add(new PreferencesPanel(), BorderLayout.CENTER);
+} else if (screen.equals("My Preferences")) {
+    content.add(new PreferencesPanel(), BorderLayout.CENTER);
 
-        } else {
-            JLabel welcome = new JLabel(
-                "Welcome! Find your best-fit engineering college.",
-                SwingConstants.CENTER
-            );
+} else if (screen.equals("College Details")) {
+    content.add(new CollegeDetailsPanel(), BorderLayout.CENTER);
 
-            welcome.setFont(new Font("Arial", Font.PLAIN, 20));
-            content.add(welcome, BorderLayout.CENTER);
-        }
+} else {
+    JLabel welcome = new JLabel(
+        "Welcome! Find your best-fit engineering college.",
+        SwingConstants.CENTER
+    );
+
+    welcome.setFont(new Font("Arial", Font.PLAIN, 20));
+    content.add(welcome, BorderLayout.CENTER);
+}
+
 
         content.revalidate();
         content.repaint();
