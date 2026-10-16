@@ -5,14 +5,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class PreferencesPanel extends JPanel {
+public class PreferencesPanel extends BasePanel {
 
     private DefaultTableModel model;
     private JTable table;
 
     public PreferencesPanel() {
-        setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    
 
         JLabel heading = new JLabel("My College Preferences");
         heading.setFont(new Font("Arial", Font.BOLD, 22));

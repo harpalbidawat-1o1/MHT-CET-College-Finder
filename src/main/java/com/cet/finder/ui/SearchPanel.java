@@ -1,16 +1,16 @@
 
 package com.cet.finder.ui;
 
+import com.cet.finder.model.College;
+import com.cet.finder.service.CollegeService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class SearchPanel extends JPanel {
+public class SearchPanel extends BasePanel {
+    private final CollegeService collegeService = new CollegeService();
 
     public SearchPanel() {
-        setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
         JLabel heading = new JLabel("Search Engineering Colleges");
         heading.setFont(new Font("Arial", Font.BOLD, 22));
 
@@ -48,13 +48,11 @@ public class SearchPanel extends JPanel {
         JPanel topPanel = new JPanel(new BorderLayout(10, 10));
         topPanel.add(heading, BorderLayout.NORTH);
         topPanel.add(filters, BorderLayout.CENTER);
-
         add(topPanel, BorderLayout.NORTH);
 
         String[] columns = {"College", "Branch", "Cutoff", "Chance"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         JTable table = new JTable(model);
-
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         searchButton.addActionListener(e -> {
@@ -70,13 +68,17 @@ public class SearchPanel extends JPanel {
                     return;
                 }
 
-                String chance = score >= 87 ? "Safe"
-                    : score >= 83 ? "Target" : "Dream";
+                String chance = collegeService.getChance(score);
+
+                College college = collegeService.createSampleCollege(
+                    city.getSelectedItem().toString(),
+                    branch.getSelectedItem().toString()
+                );
 
                 model.addRow(new Object[]{
-                    "Sample Engineering College",
-                    branch.getSelectedItem(),
-                    85.0,
+                    college.getName(),
+                    college.getBranch(),
+                    college.getCutoff(),
                     chance
                 });
 
