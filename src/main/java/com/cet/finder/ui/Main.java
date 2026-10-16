@@ -6,9 +6,12 @@ import java.awt.*;
 
 public class Main {
 
+    private static JFrame frame;
+    private static JPanel content;
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("MHT-CET College Finder");
+            frame = new JFrame("MHT-CET College Finder");
             frame.setSize(1000, 650);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLocationRelativeTo(null);
@@ -23,53 +26,51 @@ public class Main {
             menu.setPreferredSize(new Dimension(200, 0));
 
             String[] options = {
-                "Home", "Search Colleges", "My Preferences",
-                "College Details", "Admin"
+                "Home",
+                "Search Colleges",
+                "My Preferences",
+                "College Details",
+                "Admin"
             };
 
             for (String option : options) {
                 JButton button = new JButton(option);
                 menu.add(button);
+
+                button.addActionListener(e -> showScreen(option));
             }
 
             frame.add(menu, BorderLayout.WEST);
 
-            JPanel content = new JPanel(new BorderLayout());
+            content = new JPanel(new BorderLayout());
+            frame.add(content, BorderLayout.CENTER);
+
+            showScreen("Home");
+
+            frame.setVisible(true);
+        });
+    }
+
+    private static void showScreen(String screen) {
+        content.removeAll();
+
+        if (screen.equals("Search Colleges")) {
+            content.add(new SearchPanel(), BorderLayout.CENTER);
+
+        } else if (screen.equals("My Preferences")) {
+            content.add(new PreferencesPanel(), BorderLayout.CENTER);
+
+        } else {
             JLabel welcome = new JLabel(
                 "Welcome! Find your best-fit engineering college.",
                 SwingConstants.CENTER
             );
+
             welcome.setFont(new Font("Arial", Font.PLAIN, 20));
             content.add(welcome, BorderLayout.CENTER);
+        }
 
-            frame.add(content, BorderLayout.CENTER);
-
-            for (Component component : menu.getComponents()) {
-                if (component instanceof JButton button) {
-                    button.addActionListener(e -> {
-                        frame.remove(content);
-
-                        for (Component c : frame.getContentPane().getComponents()) {
-                            if (c != title && c != menu) {
-                                frame.remove(c);
-                            }
-                        }
-
-                        if (button.getText().equals("Search Colleges")) {
-                            frame.add(new SearchPanel(), BorderLayout.CENTER);
-                        } else if (button.getText().equals("My Preferences")) {
-                            frame.add(new PreferencesPanel(), BorderLayout.CENTER);
-                        } else {
-                            frame.add(content, BorderLayout.CENTER);
-                        }
-
-                        frame.revalidate();
-                        frame.repaint();
-                    });
-                }
-            }
-
-            frame.setVisible(true);
-        });
+        content.revalidate();
+        content.repaint();
     }
 }
