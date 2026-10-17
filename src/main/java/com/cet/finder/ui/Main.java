@@ -2,6 +2,9 @@
 package com.cet.finder.ui;
 
 import javax.swing.*;
+
+import com.cet.finder.model.College;
+
 import java.awt.*;
 
 public class Main {
@@ -60,7 +63,10 @@ public class Main {
             content.add(new PreferencesPanel(), BorderLayout.CENTER);
 
         } else if (screen.equals("College Details")) {
-            content.add(new CollegeDetailsPanel(), BorderLayout.CENTER);
+    College sampleCollege = new com.cet.finder.service.CollegeService()
+        .createSampleCollege("Pune", "Computer Engineering");
+
+    content.add(new CollegeDetailsPanel(sampleCollege), BorderLayout.CENTER);
 
         } else if (screen.equals("Admin")) {
             content.add(new AdminPanel(), BorderLayout.CENTER);

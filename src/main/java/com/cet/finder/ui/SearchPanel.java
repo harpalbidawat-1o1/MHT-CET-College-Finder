@@ -6,9 +6,12 @@ import com.cet.finder.service.CollegeService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchPanel extends BasePanel {
     private final CollegeService collegeService = new CollegeService();
+    private final List<College> colleges = new ArrayList<>();
 
     public SearchPanel() {
         JLabel heading = new JLabel("Search Engineering Colleges");
@@ -51,12 +54,25 @@ public class SearchPanel extends BasePanel {
         add(topPanel, BorderLayout.NORTH);
 
         String[] columns = {"College", "Branch", "Cutoff", "Chance"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0);
+
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         JTable table = new JTable(model);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
+        JButton detailsButton = new JButton("View Details");
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.add(detailsButton);
+        add(bottomPanel, BorderLayout.SOUTH);
+
         searchButton.addActionListener(e -> {
             model.setRowCount(0);
+            colleges.clear();
 
             try {
                 double score = Double.parseDouble(percentile.getText().trim());
@@ -68,18 +84,28 @@ public class SearchPanel extends BasePanel {
                     return;
                 }
 
-                String chance = collegeService.getChance(score);
+                String selectedCity = city.getSelectedItem().toString();
+                String selectedBranch = branch.getSelectedItem().toString();
+
+                if (selectedCity.equals("All Cities")) {
+                    selectedCity = "Pune";
+                }
+
+                if (selectedBranch.equals("All Branches")) {
+                    selectedBranch = "Computer Engineering";
+                }
 
                 College college = collegeService.createSampleCollege(
-                    city.getSelectedItem().toString(),
-                    branch.getSelectedItem().toString()
+                    selectedCity, selectedBranch
                 );
+
+                colleges.add(college);
 
                 model.addRow(new Object[]{
                     college.getName(),
                     college.getBranch(),
                     college.getCutoff(),
-                    chance
+                    collegeService.getChance(score)
                 });
 
             } catch (NumberFormatException ex) {
@@ -87,6 +113,30 @@ public class SearchPanel extends BasePanel {
                     this, "Please enter a valid percentile."
                 );
             }
+        });
+
+        detailsButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(
+                    this, "Please select a college first."
+                );
+                return;
+            }
+
+            int modelRow = table.convertRowIndexToModel(selectedRow);
+            College selectedCollege = colleges.get(modelRow);
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Selected college: " + selectedCollege.getName()
+                    + "\nCity: " + selectedCollege.getCity()
+                    + "\nBranch: " + selectedCollege.getBranch()
+                    + "\nCutoff: " + selectedCollege.getCutoff(),
+                "College Details",
+                JOptionPane.INFORMATION_MESSAGE
+            );
         });
     }
 }

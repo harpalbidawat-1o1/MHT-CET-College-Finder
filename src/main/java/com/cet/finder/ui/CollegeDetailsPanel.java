@@ -8,16 +8,11 @@ import java.awt.*;
 
 public class CollegeDetailsPanel extends BasePanel {
 
-    public CollegeDetailsPanel() {
+    public CollegeDetailsPanel(College college) {
         JLabel heading = new JLabel("College Details");
         heading.setFont(new Font("Arial", Font.BOLD, 22));
 
         CollegeService collegeService = new CollegeService();
-
-        College college = collegeService.createSampleCollege(
-            "Pune",
-            "Computer Engineering"
-        );
 
         JPanel card = new JPanel(new GridLayout(5, 2, 10, 15));
         card.setBorder(BorderFactory.createCompoundBorder(
